@@ -9,9 +9,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.SoftAssertions;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.jayway.jsonpath.JsonPath;
 
+import ai.saal.config.ApplicationConfig;
+import ai.saal.config.SpringConfiguration;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
@@ -23,13 +27,14 @@ import io.restassured.specification.RequestSpecification;
 import io.saal.model.Data;
 
 public class ColorValidationSteps {
-
+	private ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+	private ApplicationConfig appConfig = applicationContext.getBean(ApplicationConfig.class);
 	private RequestSpecification requestSpec;
 	private Response response;
 
 	@Given("the test environment is configured")
 	public void theTestEnvironmentIsConfigured() {
-		RestAssured.baseURI = "https://reqres.in/";
+		RestAssured.baseURI = appConfig.getBaseUri();
 		RestAssured.urlEncodingEnabled = true;
 		requestSpec = RestAssured.given();
 	}
@@ -44,7 +49,7 @@ public class ColorValidationSteps {
 
 	@When("I perform GET operation {string}")
 	public void iPerformGETOperation(String resource) {
-		response = requestSpec.when().get(resource);
+		response = requestSpec.when().get(appConfig.getResource(resource));
 		System.out.println(response);
 		response.then().log().all();
 	}
