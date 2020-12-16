@@ -8,6 +8,7 @@ This is an API test framework
 - Rest Assured (REST API test framework)
 - AssertJ (Fulent style assertions)
 - Spring (DI & Property file management)
+- Extent Reports (Reporting framework)
 ## How to Run
 ```mvn clean verify ```
 
